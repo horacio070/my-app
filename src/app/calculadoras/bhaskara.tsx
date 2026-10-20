@@ -1,81 +1,147 @@
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
+import * as Device from "expo-device";
+import { useState } from "react";
+import { Alert, Button, Platform, StyleSheet, TextInput } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-export default function HomeScreen() {
-  const [a, setA] = useState('');
-  const [b, setB] = useState('');
-  const [c, setC] = useState('');
-  const [resultado, setResultado] = useState('');
-
-  function calcularDelta(A: number, B: number, C: number) {
-    return B * B - 4 * A * C;
+function getDevMenuHint() {
+  if (Platform.OS === "web") {
+    return <ThemedText type="small">use browser devtools</ThemedText>;
   }
+  if (Device.isDevice) {
+    return (
+      <ThemedText type="small">
+        shake device or press <ThemedText type="code">m</ThemedText> in terminal
+      </ThemedText>
+    );
+  }
+  const shortcut = Platform.OS === "android" ? "cmd+m (or ctrl+m)" : "cmd+d";
+  return (
+    <ThemedText type="small">
+      press <ThemedText type="code">{shortcut}</ThemedText>
+    </ThemedText>
+  );
+}
 
-  function calcularBhaskara() {
-    const A = Number(a);
-    const B = Number(b);
-    const C = Number(c);
+export function calcDelta(a, b, c){
+  return b ** 2 - 4 * a * c;
+}
 
-    if (A === 0) {
-      setResultado('A não pode ser zero!');
-      return;
-    }
+export function calcBhaskara(a, b, c){
 
-    const delta = calcularDelta(A, B, C);
+  const delta = calcDelta(a,b,c);
+  console.log("delta", delta);
 
-    if (delta < 0) {
-      setResultado('Não existem raízes reais.');
+  if (delta === 0) {
+    const x1 = (b * -1) / (2 * a);
+    console.log("x1", x1);
+  } else if (delta > 0) {
+    const x1 = (b * -1 + delta ** 0.5) / (2 * a);
+    const x2 = (b * -1 - delta ** 0.5) / (2 * a);
+    console.log("x1", x1);
+    console.log("x2", x2);
+  } else {
+    console.log("Error");
+  }
+}
+export default function PitagorasScreen() {
+  const [valueA, onChangeTextA] = useState(0);
+  const [valueB, onChangeTextB] = useState(0);
+  const [valueC, onChangeTextC] = useState(0);
+
+  const calc = () => {
+    Alert.alert("asdasd");
+    console.log("valueA", valueA);
+    console.log("valueB", valueB);
+    console.log("valueC", valueC);
+
+    const delta = valueB ** 2 - 4 * valueA * valueC;
+
+    console.log("delta", delta);
+
+    if (delta === 0) {
+      const x1 = (valueB * -1) / (2 * valueA);
+      console.log("x1", x1);
+    } else if (delta > 0) {
+      const x1 = (valueB * -1 + delta ** 0.5) / (2 * valueA);
+      const x2 = (valueB * -1 - delta ** 0.5) / (2 * valueA);
+      console.log("x1", x1);
+      console.log("x2", x2);
     } else {
-      const x1 = (-B + Math.sqrt(delta)) / (2 * A);
-      const x2 = (-B - Math.sqrt(delta)) / (2 * A);
-
-      setResultado(
-        'Delta = ' + delta + '\nX1 = ' + x1 + '\nX2 = ' + x2
-      );
+      console.log("Error");
     }
-  }
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Calculadora de Bhaskara</Text>
-
-      <TextInput style={styles.input} placeholder="Valor de A" keyboardType="numeric" onChangeText={setA} />
-      <TextInput style={styles.input} placeholder="Valor de B" keyboardType="numeric" onChangeText={setB} />
-      <TextInput style={styles.input} placeholder="Valor de C" keyboardType="numeric" onChangeText={setC} />
-
-      <Button title="Calcular" onPress={calcularBhaskara} />
-
-      <Text style={styles.resultado}>{resultado}</Text>
-    </View>
+    <ThemedView style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        <ThemedView style={styles.heroSection}>
+          <TextInput
+            style={styles.input}
+            value={valueA}
+            onChangeText={onChangeTextA}
+          />
+          <TextInput
+            style={styles.input}
+            value={valueB}
+            onChangeText={onChangeTextB}
+          />
+          <TextInput
+            style={styles.input}
+            value={valueC}
+            onChangeText={onChangeTextC}
+          />
+          <Button title="Calcular" onPress={calc} />
+        </ThemedView>
+      </SafeAreaView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    flexDirection: "row",
   },
-  titulo: {
-    fontSize: 25,
-    marginBottom: 10,
+  safeArea: {
+    flex: 1,
+    paddingHorizontal: Spacing.four,
+    alignItems: "center",
+    gap: Spacing.three,
+    paddingBottom: BottomTabInset + Spacing.three,
+    maxWidth: MaxContentWidth,
   },
-  formula: {
-    fontSize: 18,
-    marginBottom: 10,
+  heroSection: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+    paddingHorizontal: Spacing.four,
+    gap: Spacing.four,
+  },
+  title: {
+    textAlign: "center",
+  },
+  code: {
+    textTransform: "uppercase",
+  },
+  stepContainer: {
+    gap: Spacing.three,
+    alignSelf: "stretch",
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.four,
+    borderRadius: Spacing.four,
   },
   input: {
     width: 140,
-    height: 38,
+    borderWidth: 1,
+    height: 30,
     margin: 5,
     borderWidth: 1,
     padding: 8,
-    textAlign: 'center',
-  },
-  resultado: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginTop: 15,
+    textAlign: `center`
   },
 });

@@ -1,18 +1,17 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { BottomTabInset, MaxContentWidth, Spacing } from "@/constants/theme";
+import * as Device from "expo-device";
+import { useState } from "react";
+import { Platform, StyleSheet, TextInput, Button} from "react-native";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 function getDevMenuHint() {
-  if (Platform.OS === 'web') {
+  if (Platform.OS === "web") {
     return <ThemedText type="small">use browser devtools</ThemedText>;
   }
+
   if (Device.isDevice) {
     return (
       <ThemedText type="small">
@@ -20,7 +19,7 @@ function getDevMenuHint() {
       </ThemedText>
     );
   }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+  const shortcut = Platform.OS === "android" ? "cmd+m (or ctrl+m)" : "cmd+d";
   return (
     <ThemedText type="small">
       press <ThemedText type="code">{shortcut}</ThemedText>
@@ -28,34 +27,54 @@ function getDevMenuHint() {
   );
 }
 
-export default function HomeScreen() {
+export function calcPitagoras(a, b){
+  return (a ** 2 + b ** 2) ** 0.5;
+}
+
+
+
+export default function PitagorasScreen() {
+  const [valueA, onChangeTextA] = useState("");
+  const [valueB, onChangeTextB] = useState("");
+
+  const [resultado, setResultado] = useState("");
+
+  const calc = () => {
+  const a = Number(valueA);
+  const b = Number(valueB);
+
+
+  if (valueA === "" || valueB === "" || a <= 0 || b <= 0) {
+    setResultado("Digite os dois valores!");
+    return;
+  }
+
+  const c = calcPitagoras(a, b);
+
+ setResultado("O valor de C é: " + c);
+ }
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+          <TextInput
+            style={styles.input}
+            placeholder="A"
+            onChangeText={onChangeTextA}
+            value={valueA}
+            keyboardType="numeric"
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeTextB}
+            value={valueB}
+            placeholder="B"
+            keyboardType="numeric"
           />
+          <Button title="Calcular" onPress ={calc} />
+          <ThemedText>{resultado}</ThemedText>
         </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
       </SafeAreaView>
     </ThemedView>
   );
@@ -64,35 +83,31 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    justifyContent: "center",
   },
+
   safeArea: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    padding: 20,
+    justifyContent: "center",
+    maxWidth: 400,
+    width: "100%",
+    alignSelf: "center",
   },
+
   heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    backgroundColor: "#F1F5F9",
+    padding: 25,
+    borderRadius: 15,
+    gap: 15,
   },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+
+  input: {
+    borderWidth: 1,
+    borderColor: "#CBD5E1",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
   },
 });
