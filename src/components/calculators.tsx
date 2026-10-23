@@ -19,3 +19,24 @@ export function calcDelta(a, b, c){
       console.log("Error");
     }
   }
+
+  export function calcPitagoras(a, b){
+  return (a ** 2 + b ** 2) ** 0.5;
+}
+
+
+export function calcCalculadora(a, b, operacao) {
+  if (operacao === '+') {
+    return a + b;
+  } else if (operacao === '-') {
+    return a - b;
+  } else if (operacao === '*') {
+    return a * b;
+  } else if (operacao === '/') {
+    if (b === 0) {
+      return 'Não pode dividir por zero';
+    }
+
+    return a / b;
+  }
+}

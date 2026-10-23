@@ -29,6 +29,9 @@ export default function AppTabs() {
           <TabTrigger name="pitagoras" href="/calculadoras/pitagoras" asChild>
             <TabButton>pitagoras</TabButton>
           </TabTrigger>
+          <TabTrigger name="Calculadora" href="/calculadoras/calculadora" asChild>
+            <TabButton>Calculadora</TabButton>
+          </TabTrigger>
         </CustomTabList>
       </TabList>
     </Tabs>

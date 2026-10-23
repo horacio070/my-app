@@ -48,32 +48,30 @@ export function calcBhaskara(a, b, c){
   }
 }
 export default function PitagorasScreen() {
-  const [valueA, onChangeTextA] = useState(0);
-  const [valueB, onChangeTextB] = useState(0);
-  const [valueC, onChangeTextC] = useState(0);
+  const [valueA, onChangeTextA] = useState("");
+  const [valueB, onChangeTextB] = useState("");
+  const [valueC, onChangeTextC] = useState("");
+  const [resultado, setResultado] = useState("");
 
   const calc = () => {
-    Alert.alert("asdasd");
-    console.log("valueA", valueA);
-    console.log("valueB", valueB);
-    console.log("valueC", valueC);
+  const a = Number(valueA);
+  const b = Number(valueB);
+  const c = Number(valueC);
 
-    const delta = valueB ** 2 - 4 * valueA * valueC;
+  const delta = b ** 2 - 4 * a * c;
 
-    console.log("delta", delta);
+  if (delta === 0) {
+    const x1 = -b / (2 * a);
+    setResultado("X1: " + x1);
+  } else if (delta > 0) {
+    const x1 = (-b + delta ** 0.5) / (2 * a);
+    const x2 = (-b - delta ** 0.5) / (2 * a);
 
-    if (delta === 0) {
-      const x1 = (valueB * -1) / (2 * valueA);
-      console.log("x1", x1);
-    } else if (delta > 0) {
-      const x1 = (valueB * -1 + delta ** 0.5) / (2 * valueA);
-      const x2 = (valueB * -1 - delta ** 0.5) / (2 * valueA);
-      console.log("x1", x1);
-      console.log("x2", x2);
-    } else {
-      console.log("Error");
-    }
-  };
+    setResultado("X1: " + x1 + " X2: " + x2 + " Delta: " + delta);
+  } else {
+    setResultado("Delta negativo");
+  }
+};
 
   return (
     <ThemedView style={styles.container}>
@@ -95,6 +93,7 @@ export default function PitagorasScreen() {
             onChangeText={onChangeTextC}
           />
           <Button title="Calcular" onPress={calc} />
+          <ThemedText>{resultado}</ThemedText>
         </ThemedView>
       </SafeAreaView>
     </ThemedView>
